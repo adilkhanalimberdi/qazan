@@ -11,9 +11,11 @@ import com.css216.qazan.ui.screens.fridge.FridgeViewModel
 import com.css216.qazan.ui.screens.search.SearchViewModel
 import com.css216.qazan.ui.screens.detail.DetailViewModel
 import com.css216.qazan.ui.screens.favorites.FavoritesViewModel
+import com.css216.qazan.ui.screens.shopping.ShoppingViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
+        initializer { ShoppingViewModel(qazanApplication().container.shoppingRepository) }
         initializer {
             val container = qazanApplication().container
             FavoritesViewModel(container.favoritesRepository, container.shoppingRepository)

@@ -1,25 +1,19 @@
 package com.css216.qazan.ui.navigation
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.css216.qazan.R
-import com.css216.qazan.ui.components.ScreenHeading
-import com.css216.qazan.ui.theme.Dimensions
 import com.css216.qazan.ui.screens.home.HomeRoute
 import com.css216.qazan.ui.screens.fridge.FridgeRoute
 import com.css216.qazan.ui.screens.search.SearchRoute
 import com.css216.qazan.ui.screens.detail.DetailRoute
 import com.css216.qazan.ui.screens.favorites.FavoritesRoute
+import com.css216.qazan.ui.screens.shopping.ShoppingRoute
 
 @Composable
 fun QazanNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -67,7 +61,7 @@ fun QazanNavHost(navController: NavHostController, modifier: Modifier = Modifier
             )
         }
         composable(QazanDestination.Shopping.route) {
-            PlaceholderScreen(stringResource(R.string.shopping), onBack = { navController.navigateUp() })
+            ShoppingRoute(onBack = { navController.navigateUp() })
         }
         composable(
             QazanDestination.Detail.route,
@@ -78,13 +72,5 @@ fun QazanNavHost(navController: NavHostController, modifier: Modifier = Modifier
                 onOpenShopping = { navController.navigate(QazanDestination.Shopping.route) }
             )
         }
-    }
-}
-
-@Composable
-private fun PlaceholderScreen(title: String, onBack: (() -> Unit)? = null) {
-    Column(Modifier.padding(Dimensions.screenPadding)) {
-        ScreenHeading(title, onBack = onBack)
-        Text(stringResource(R.string.screen_in_progress))
     }
 }

@@ -16,7 +16,6 @@
     <string name="favorites">Избранное</string>
     <string name="shopping">Покупки</string>
     <string name="recipe">Рецепт</string>
-    <string name="screen_in_progress">Экран готовится</string>
     <string name="slogan">Готовь из того, что есть</string>
     <string name="home_title">Что приготовим сегодня?</string>
     <string name="fridge_prompt">Что есть в холодильнике?</string>
@@ -57,4 +56,9 @@
     <string name="favorites_count">Сохранено рецептов: %1$d</string>
     <string name="favorites_empty">Сохраняй рецепты сердечком — они появятся здесь.</string>
     <string name="shopping_remaining">Открыть покупки. Осталось: %1$d</string>
+    <string name="shopping_title">Список покупок</string>
+    <string name="shopping_progress">Куплено %1$d из %2$d</string>
+    <string name="shopping_empty">Всё готово! Добавь недостающие продукты из рецепта.</string>
+    <string name="clear_bought">Убрать купленное</string>
+    <string name="other_products">Другие продукты</string>
 </resources>
