@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -14,11 +15,24 @@ import androidx.navigation.navArgument
 import com.css216.qazan.R
 import com.css216.qazan.ui.components.ScreenHeading
 import com.css216.qazan.ui.theme.Dimensions
+import com.css216.qazan.ui.screens.home.HomeRoute
 
 @Composable
 fun QazanNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(navController, startDestination = QazanDestination.Home.route, modifier = modifier) {
-        composable(QazanDestination.Home.route) { PlaceholderScreen(stringResource(R.string.home)) }
+        composable(QazanDestination.Home.route) {
+            HomeRoute(
+                onOpenFridge = { navController.navigate(QazanDestination.Fridge.route) { launchSingleTop = true } },
+                onMealClick = { navController.navigate(QazanDestination.Detail.createRoute(it)) },
+                onCategoryClick = { category ->
+                    navController.navigate(QazanDestination.Search.createRoute(category)) {
+                        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                        launchSingleTop = true
+                    }
+                },
+                onOpenShopping = { navController.navigate(QazanDestination.Shopping.route) }
+            )
+        }
         composable(QazanDestination.Fridge.route) { PlaceholderScreen(stringResource(R.string.fridge)) }
         composable(
             QazanDestination.Search.route,
