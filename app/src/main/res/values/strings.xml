@@ -10,4 +10,11 @@
     <string name="load_error">Не удалось загрузить рецепты</string>
     <string name="retry">Повторить</string>
     <string name="empty_results">Пока ничего не найдено. Попробуй другие продукты.</string>
+    <string name="home">Главная</string>
+    <string name="fridge">Холодильник</string>
+    <string name="search">Поиск</string>
+    <string name="favorites">Избранное</string>
+    <string name="shopping">Покупки</string>
+    <string name="recipe">Рецепт</string>
+    <string name="screen_in_progress">Экран готовится</string>
 </resources>
