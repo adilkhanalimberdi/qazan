@@ -24,6 +24,10 @@ fun QazanApp() {
         bottomBar = {
             if (showBottomBar) {
                 QazanBottomBar(route) { destination ->
+                    if (destination == QazanDestination.Home) {
+                        navController.popBackStack(QazanDestination.Home.route, inclusive = false, saveState = true)
+                        return@QazanBottomBar
+                    }
                     val target = if (destination == QazanDestination.Search) {
                         QazanDestination.Search.createRoute()
                     } else destination.route
