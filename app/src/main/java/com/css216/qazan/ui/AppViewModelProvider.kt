@@ -9,9 +9,14 @@ import com.css216.qazan.QazanApplication
 import com.css216.qazan.ui.screens.home.HomeViewModel
 import com.css216.qazan.ui.screens.fridge.FridgeViewModel
 import com.css216.qazan.ui.screens.search.SearchViewModel
+import com.css216.qazan.ui.screens.detail.DetailViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
+        initializer {
+            val container = qazanApplication().container
+            DetailViewModel(createSavedStateHandle(), container.recipeRepository, container.favoritesRepository, container.fridgeRepository, container.shoppingRepository)
+        }
         initializer {
             val container = qazanApplication().container
             SearchViewModel(createSavedStateHandle(), container.recipeRepository, container.fridgeRepository, container.favoritesRepository)

@@ -27,6 +27,8 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.PathEffect
@@ -37,7 +39,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.css216.qazan.R
+import com.css216.qazan.ui.AppViewModelProvider
 import com.css216.qazan.data.fake.FakeRecipeData
 import com.css216.qazan.data.model.Ingredient
 import com.css216.qazan.ui.components.ErrorView
@@ -47,6 +51,16 @@ import com.css216.qazan.ui.components.MealPlaceholder
 import com.css216.qazan.ui.components.ScreenHeading
 import com.css216.qazan.ui.theme.Dimensions
 import com.css216.qazan.ui.theme.QazanTheme
+
+@Composable
+fun DetailRoute(
+    onBack: () -> Unit,
+    onOpenShopping: () -> Unit,
+    viewModel: DetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    DetailScreen(uiState, onBack, onOpenShopping, viewModel::loadMeal, viewModel::toggleFavorite, viewModel::selectTab, viewModel::addMissingToShopping)
+}
 
 @Composable
 fun DetailScreen(
