@@ -35,4 +35,13 @@
     <string name="common_ingredients">Часто добавляют</string>
     <string name="fridge_empty">Здесь пока пусто. Добавь первый продукт.</string>
     <string name="find_recipes">Найти рецепты</string>
+    <string name="search_title">Найти свой рецепт</string>
+    <string name="search_input">Название рецепта</string>
+    <string name="search_hint">Например, Chicken</string>
+    <string name="clear_search">Очистить поиск</string>
+    <string name="fridge_filter">Из холодильника · %1$d</string>
+    <string name="remove_category">Убрать категорию %1$s</string>
+    <string name="results_count">Найдено рецептов: %1$d</string>
+    <string name="search_fridge_empty">Добавь продукты в холодильник или отключи фильтр.</string>
+    <string name="open_fridge">Открыть холодильник</string>
 </resources>
