@@ -12,6 +12,7 @@ fun QazanTheme(
     MaterialTheme(
         colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
         typography = Typography,
+        shapes = QazanShapes,
         content = content
     )
 }
