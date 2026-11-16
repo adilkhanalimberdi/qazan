@@ -44,4 +44,14 @@
     <string name="results_count">Найдено рецептов: %1$d</string>
     <string name="search_fridge_empty">Добавь продукты в холодильник или отключи фильтр.</string>
     <string name="open_fridge">Открыть холодильник</string>
+    <string name="ingredients_tab">Ингредиенты</string>
+    <string name="instructions_tab">Приготовление</string>
+    <string name="have_count">Есть %1$d из %2$d</string>
+    <string name="ingredient_have">Есть дома</string>
+    <string name="ingredient_missing">Нужно купить</string>
+    <string name="add_missing">Добавить в покупки: %1$d</string>
+    <string name="all_ingredients_available">Все продукты уже есть</string>
+    <string name="open_shopping">Открыть покупки</string>
+    <string name="shopping_added">Недостающие продукты добавлены</string>
+    <string name="demo_recipe">Демонстрационный рецепт</string>
 </resources>

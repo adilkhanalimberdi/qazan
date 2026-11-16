@@ -18,6 +18,8 @@ import com.css216.qazan.ui.theme.Dimensions
 import com.css216.qazan.ui.screens.home.HomeRoute
 import com.css216.qazan.ui.screens.fridge.FridgeRoute
 import com.css216.qazan.ui.screens.search.SearchRoute
+import com.css216.qazan.ui.screens.detail.DetailScreen
+import com.css216.qazan.ui.screens.detail.DetailUiState
 
 @Composable
 fun QazanNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -66,7 +68,12 @@ fun QazanNavHost(navController: NavHostController, modifier: Modifier = Modifier
             QazanDestination.Detail.route,
             arguments = listOf(navArgument(QazanDestination.Detail.ARG) { type = NavType.StringType })
         ) {
-            PlaceholderScreen(stringResource(R.string.recipe), onBack = { navController.navigateUp() })
+            DetailScreen(
+                DetailUiState(),
+                onBack = { navController.navigateUp() },
+                onOpenShopping = { navController.navigate(QazanDestination.Shopping.route) },
+                onRetry = {}, onFavoriteClick = {}, onTabChange = {}, onAddMissing = {}
+            )
         }
     }
 }
