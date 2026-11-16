@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 fun SectionHeader(title: String, actionLabel: String? = null, onAction: () -> Unit = {}) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(title, Modifier.weight(1f), style = MaterialTheme.typography.titleLarge)
-        if (actionLabel != null) TextButton(onClick = onAction) { Text(actionLabel) }
+        if (actionLabel != null) TextButton(onClick = onAction) {
+            Text(actionLabel, color = MaterialTheme.colorScheme.secondary)
+        }
     }
 }

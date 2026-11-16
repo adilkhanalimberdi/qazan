@@ -119,7 +119,9 @@ fun SearchScreen(
                         EmptyView(stringResource(if (uiState.useFridge && uiState.fridgeCount == 0) R.string.search_fridge_empty else R.string.empty_results))
                     }
                     if (uiState.useFridge && uiState.fridgeCount == 0) item {
-                        TextButton(onClick = onOpenFridge) { Text(stringResource(R.string.open_fridge)) }
+                        TextButton(onClick = onOpenFridge) {
+                            Text(stringResource(R.string.open_fridge), color = MaterialTheme.colorScheme.secondary)
+                        }
                     }
                 }
                 items(content.results, key = { it.meal.id }) { result ->
