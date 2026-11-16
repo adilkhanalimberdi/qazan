@@ -26,4 +26,13 @@
     <string name="another_recipe">Другой</string>
     <string name="categories">Категории</string>
     <string name="no_categories">Категорий пока нет</string>
+    <string name="fridge_subtitle">Начнём с того, что уже есть дома</string>
+    <string name="ingredient_input">Продукт на английском</string>
+    <string name="ingredient_hint">Например, Chicken</string>
+    <string name="ingredient_language_hint">Используй английские названия, как в рецептах: Chicken, Rice, Tomato.</string>
+    <string name="add_ingredient">Добавить продукт</string>
+    <string name="your_ingredients">У тебя есть · %1$d</string>
+    <string name="common_ingredients">Часто добавляют</string>
+    <string name="fridge_empty">Здесь пока пусто. Добавь первый продукт.</string>
+    <string name="find_recipes">Найти рецепты</string>
 </resources>
