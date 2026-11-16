@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Qazan</string>
+    <string name="save_meal">Сохранить %1$s в избранное</string>
+    <string name="unsave_meal">Убрать %1$s из избранного</string>
+    <string name="match_count">%1$d из %2$d твоих продуктов</string>
+    <string name="meal_meta">%1$s · %2$s</string>
 </resources>
