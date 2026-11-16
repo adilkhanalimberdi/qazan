@@ -6,4 +6,8 @@
     <string name="meal_meta">%1$s · %2$s</string>
     <string name="remove_ingredient">Убрать %1$s</string>
     <string name="back">Назад</string>
+    <string name="loading">Загружаем рецепты…</string>
+    <string name="load_error">Не удалось загрузить рецепты</string>
+    <string name="retry">Повторить</string>
+    <string name="empty_results">Пока ничего не найдено. Попробуй другие продукты.</string>
 </resources>
