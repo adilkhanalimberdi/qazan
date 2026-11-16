@@ -1,15 +1,21 @@
 package com.css216.qazan.ui
 
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.css216.qazan.QazanApplication
 import com.css216.qazan.ui.screens.home.HomeViewModel
 import com.css216.qazan.ui.screens.fridge.FridgeViewModel
+import com.css216.qazan.ui.screens.search.SearchViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
+        initializer {
+            val container = qazanApplication().container
+            SearchViewModel(createSavedStateHandle(), container.recipeRepository, container.fridgeRepository, container.favoritesRepository)
+        }
         initializer { FridgeViewModel(qazanApplication().container.fridgeRepository) }
         initializer {
             val container = qazanApplication().container
