@@ -54,4 +54,7 @@
     <string name="open_shopping">Открыть покупки</string>
     <string name="shopping_added">Недостающие продукты добавлены</string>
     <string name="demo_recipe">Демонстрационный рецепт</string>
+    <string name="favorites_count">Сохранено рецептов: %1$d</string>
+    <string name="favorites_empty">Сохраняй рецепты сердечком — они появятся здесь.</string>
+    <string name="shopping_remaining">Открыть покупки. Осталось: %1$d</string>
 </resources>
