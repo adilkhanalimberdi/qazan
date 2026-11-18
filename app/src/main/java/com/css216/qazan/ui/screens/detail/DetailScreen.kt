@@ -134,7 +134,7 @@ fun DetailScreen(
                                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                             }
                         } else Text(content.meal.instructions, style = MaterialTheme.typography.bodyLarge)
-                        Text(stringResource(R.string.demo_recipe), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(stringResource(R.string.mealdb_attribution), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
