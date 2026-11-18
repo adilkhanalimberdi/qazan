@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -26,6 +27,7 @@ fun IngredientChip(name: String, onRemove: () -> Unit, modifier: Modifier = Modi
         selected = true,
         onClick = onRemove,
         label = { Text(name) },
+        avatar = { IngredientPhoto(name, Modifier.size(24.dp).clip(MaterialTheme.shapes.small)) },
         trailingIcon = { Icon(painterResource(R.drawable.ic_close), null, Modifier.size(18.dp)) },
         modifier = modifier.heightIn(min = Dimensions.touchTarget).semantics { contentDescription = description },
         shape = PillShape,
@@ -43,6 +45,7 @@ fun SuggestionChip(name: String, onAdd: () -> Unit, modifier: Modifier = Modifie
     AssistChip(
         onClick = onAdd,
         label = { Text(name) },
+        leadingIcon = { IngredientPhoto(name, Modifier.size(24.dp).clip(MaterialTheme.shapes.small)) },
         modifier = modifier.heightIn(min = Dimensions.touchTarget),
         shape = PillShape
     )
