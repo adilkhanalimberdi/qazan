@@ -10,7 +10,7 @@ import com.css216.qazan.data.repository.RecipeRepository
 import com.css216.qazan.data.repository.ShoppingRepository
 import com.css216.qazan.data.network.MealDbApiService
 import kotlinx.serialization.json.Json
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
@@ -25,7 +25,7 @@ class DefaultAppContainer : AppContainer {
     private val api: MealDbApiService = Retrofit.Builder()
         .baseUrl("https://www.themealdb.com/api/json/v1/1/")
         .addConverterFactory(Json { ignoreUnknownKeys = true }
-            .asConverterFactory(MediaType.parse("application/json")!!))
+            .asConverterFactory("application/json".toMediaType()))
         .build()
         .create(MealDbApiService::class.java)
 

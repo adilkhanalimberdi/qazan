@@ -4,6 +4,7 @@
     <string name="unsave_meal">Убрать %1$s из избранного</string>
     <string name="match_count">%1$d из %2$d твоих продуктов</string>
     <string name="meal_meta">%1$s · %2$s</string>
+    <string name="meal_photo">Фото блюда %1$s</string>
     <string name="remove_ingredient">Убрать %1$s</string>
     <string name="back">Назад</string>
     <string name="loading">Загружаем рецепты…</string>

@@ -47,7 +47,7 @@ import com.css216.qazan.data.model.Ingredient
 import com.css216.qazan.ui.components.ErrorView
 import com.css216.qazan.ui.components.FavoriteButton
 import com.css216.qazan.ui.components.LoadingView
-import com.css216.qazan.ui.components.MealPlaceholder
+import com.css216.qazan.ui.components.MealPhoto
 import com.css216.qazan.ui.components.ScreenHeading
 import com.css216.qazan.ui.theme.Dimensions
 import com.css216.qazan.ui.theme.QazanTheme
@@ -88,7 +88,7 @@ fun DetailScreen(
         LazyColumn(Modifier.weight(1f)) {
             item {
                 Box(Modifier.fillMaxWidth().height(250.dp)) {
-                    MealPlaceholder(Modifier.fillMaxSize())
+                    MealPhoto(content.meal.name, content.meal.thumbUrl, Modifier.fillMaxSize(), large = true)
                     Row(Modifier.fillMaxWidth().padding(Dimensions.large), horizontalArrangement = Arrangement.SpaceBetween) {
                         Surface(shape = CircleShape) {
                             IconButton(onClick = onBack) { Icon(painterResource(R.drawable.ic_arrow_back), stringResource(R.string.back)) }

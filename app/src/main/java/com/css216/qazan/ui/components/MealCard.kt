@@ -46,7 +46,7 @@ fun MealListCard(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Row(Modifier.padding(Dimensions.medium), verticalAlignment = Alignment.CenterVertically) {
-            MealPlaceholder(Modifier.size(84.dp).clip(MaterialTheme.shapes.small))
+            MealPhoto(meal.name, meal.thumbUrl, Modifier.size(84.dp).clip(MaterialTheme.shapes.small))
             Column(
                 Modifier.weight(1f).padding(start = Dimensions.medium),
                 verticalArrangement = Arrangement.spacedBy(Dimensions.extraSmall)
@@ -83,7 +83,7 @@ fun MealGridCard(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Box {
-            MealPlaceholder(Modifier.fillMaxWidth().aspectRatio(1.45f))
+            MealPhoto(meal.name, meal.thumbUrl, Modifier.fillMaxWidth().aspectRatio(1.45f))
             Surface(
                 modifier = Modifier.align(Alignment.TopEnd).padding(8.dp),
                 shape = MaterialTheme.shapes.large,
