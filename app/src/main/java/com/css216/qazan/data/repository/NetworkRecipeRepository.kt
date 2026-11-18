@@ -6,6 +6,9 @@ import com.css216.qazan.data.model.Meal
 import com.css216.qazan.data.model.MealSummary
 import com.css216.qazan.data.network.MealDbApiService
 import com.css216.qazan.data.network.toDomain
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 
 class NetworkRecipeRepository(private val api: MealDbApiService) : RecipeRepository {
     override suspend fun getRandomMeal(): Meal =
@@ -26,12 +29,17 @@ class NetworkRecipeRepository(private val api: MealDbApiService) : RecipeReposit
         api.filterByCategory(category).meals.orEmpty().map { it.toDomain() }
 
     override suspend fun findByIngredients(ingredients: List<String>): List<MatchedMeal> {
-        val selected = ingredients.map { it.trim() }.filter { it.isNotEmpty() }.distinct()
+        val selected = ingredients.map { it.trim().lowercase() }
+            .filter { it.isNotEmpty() }.distinct()
         if (selected.isEmpty()) return emptyList()
         val matches = mutableMapOf<String, MatchedMeal>()
-        for (ingredient in selected) {
-            val query = ingredient.lowercase().replace(' ', '_')
-            for (meal in api.filterByIngredient(query).meals.orEmpty()) {
+        val responses = coroutineScope {
+            selected.map { ingredient ->
+                async { api.filterByIngredient(ingredient.replace(' ', '_')).meals.orEmpty() }
+            }.awaitAll()
+        }
+        for (meals in responses) {
+            for (meal in meals.distinctBy { it.id }) {
                 val previous = matches[meal.id]
                 matches[meal.id] = MatchedMeal(
                     meal = meal.toDomain(),
