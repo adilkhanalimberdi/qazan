@@ -9,13 +9,16 @@ import com.css216.qazan.data.repository.FavoritesRepository
 import com.css216.qazan.data.repository.FridgeRepository
 import com.css216.qazan.data.repository.RecipeRepository
 import com.css216.qazan.ui.navigation.QazanDestination
+import java.io.IOException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class SearchViewModel(
     savedStateHandle: SavedStateHandle,
@@ -66,6 +69,7 @@ class SearchViewModel(
         searchJob = viewModelScope.launch {
             _uiState.update { it.copy(content = SearchContent.Loading) }
             try {
+                if (state.query.isNotBlank()) delay(300)
                 val results = if (state.useFridge) {
                     recipeRepository.findByIngredients(selected)
                 } else {
@@ -80,7 +84,9 @@ class SearchViewModel(
                 _uiState.update { it.copy(content = SearchContent.Success(filtered)) }
             } catch (error: CancellationException) {
                 throw error
-            } catch (_: Exception) {
+            } catch (_: IOException) {
+                _uiState.update { it.copy(content = SearchContent.Error) }
+            } catch (_: HttpException) {
                 _uiState.update { it.copy(content = SearchContent.Error) }
             }
         }
