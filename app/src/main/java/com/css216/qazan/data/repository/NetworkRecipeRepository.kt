@@ -28,6 +28,9 @@ class NetworkRecipeRepository(private val api: MealDbApiService) : RecipeReposit
     override suspend fun getMealsByCategory(category: String): List<MealSummary> =
         api.filterByCategory(category).meals.orEmpty().map { it.toDomain() }
 
+    override suspend fun getIngredientSuggestions(): List<String> =
+        api.ingredientList().meals.orEmpty().map { it.name }.distinct().sorted()
+
     override suspend fun findByIngredients(ingredients: List<String>): List<MatchedMeal> {
         val selected = ingredients.map { it.trim().lowercase() }
             .filter { it.isNotEmpty() }.distinct()

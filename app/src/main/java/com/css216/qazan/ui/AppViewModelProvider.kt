@@ -28,7 +28,10 @@ object AppViewModelProvider {
             val container = qazanApplication().container
             SearchViewModel(createSavedStateHandle(), container.recipeRepository, container.fridgeRepository, container.favoritesRepository)
         }
-        initializer { FridgeViewModel(qazanApplication().container.fridgeRepository) }
+        initializer {
+            val container = qazanApplication().container
+            FridgeViewModel(container.fridgeRepository, container.recipeRepository)
+        }
         initializer {
             val container = qazanApplication().container
             HomeViewModel(container.recipeRepository, container.fridgeRepository, container.favoritesRepository)

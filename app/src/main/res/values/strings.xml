@@ -33,6 +33,7 @@
     <string name="add_ingredient">Добавить продукт</string>
     <string name="your_ingredients">У тебя есть · %1$d</string>
     <string name="common_ingredients">Часто добавляют</string>
+    <string name="ingredient_suggestions">Подсказки</string>
     <string name="fridge_empty">Здесь пока пусто. Добавь первый продукт.</string>
     <string name="find_recipes">Найти рецепты</string>
     <string name="search_title">Найти свой рецепт</string>

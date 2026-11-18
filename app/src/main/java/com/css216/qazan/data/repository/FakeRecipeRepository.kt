@@ -29,6 +29,9 @@ class FakeRecipeRepository : RecipeRepository {
     override suspend fun getMealsByCategory(category: String): List<MealSummary> =
         meals.filter { it.category.equals(category, ignoreCase = true) }.map { it.toSummary() }
 
+    override suspend fun getIngredientSuggestions(): List<String> =
+        meals.flatMap { it.ingredients }.map { it.name }.distinct().sorted()
+
     override suspend fun findByIngredients(ingredients: List<String>): List<MatchedMeal> {
         val selected = ingredients.map(IngredientMatcher::normalize).filter { it.isNotBlank() }.toSet()
         if (selected.isEmpty()) return emptyList()
