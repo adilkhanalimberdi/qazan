@@ -5,10 +5,10 @@ import androidx.room.Room
 import com.css216.qazan.data.local.QazanDatabase
 import com.css216.qazan.data.repository.FavoritesRepository
 import com.css216.qazan.data.repository.FridgeRepository
-import com.css216.qazan.data.repository.InMemoryFridgeRepository
 import com.css216.qazan.data.repository.InMemoryShoppingRepository
 import com.css216.qazan.data.repository.NetworkRecipeRepository
 import com.css216.qazan.data.repository.OfflineFavoritesRepository
+import com.css216.qazan.data.repository.OfflineFridgeRepository
 import com.css216.qazan.data.repository.RecipeRepository
 import com.css216.qazan.data.repository.ShoppingRepository
 import com.css216.qazan.data.network.MealDbApiService
@@ -38,7 +38,7 @@ class DefaultAppContainer(context: Context) : AppContainer {
         .create(MealDbApiService::class.java)
 
     override val recipeRepository: RecipeRepository = NetworkRecipeRepository(api)
-    override val fridgeRepository: FridgeRepository = InMemoryFridgeRepository()
+    override val fridgeRepository: FridgeRepository = OfflineFridgeRepository(database.fridgeDao())
     override val favoritesRepository: FavoritesRepository = OfflineFavoritesRepository(database.favoriteDao())
     override val shoppingRepository: ShoppingRepository = InMemoryShoppingRepository()
 }
