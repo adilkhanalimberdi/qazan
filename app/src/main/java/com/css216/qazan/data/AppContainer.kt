@@ -1,11 +1,14 @@
 package com.css216.qazan.data
 
+import android.content.Context
+import androidx.room.Room
+import com.css216.qazan.data.local.QazanDatabase
 import com.css216.qazan.data.repository.FavoritesRepository
 import com.css216.qazan.data.repository.FridgeRepository
-import com.css216.qazan.data.repository.InMemoryFavoritesRepository
 import com.css216.qazan.data.repository.InMemoryFridgeRepository
 import com.css216.qazan.data.repository.InMemoryShoppingRepository
 import com.css216.qazan.data.repository.NetworkRecipeRepository
+import com.css216.qazan.data.repository.OfflineFavoritesRepository
 import com.css216.qazan.data.repository.RecipeRepository
 import com.css216.qazan.data.repository.ShoppingRepository
 import com.css216.qazan.data.network.MealDbApiService
@@ -21,7 +24,12 @@ interface AppContainer {
     val shoppingRepository: ShoppingRepository
 }
 
-class DefaultAppContainer : AppContainer {
+class DefaultAppContainer(context: Context) : AppContainer {
+    private val database = Room.databaseBuilder(
+        context.applicationContext,
+        QazanDatabase::class.java,
+        "qazan.db"
+    ).build()
     private val api: MealDbApiService = Retrofit.Builder()
         .baseUrl("https://www.themealdb.com/api/json/v1/1/")
         .addConverterFactory(Json { ignoreUnknownKeys = true }
@@ -31,6 +39,6 @@ class DefaultAppContainer : AppContainer {
 
     override val recipeRepository: RecipeRepository = NetworkRecipeRepository(api)
     override val fridgeRepository: FridgeRepository = InMemoryFridgeRepository()
-    override val favoritesRepository: FavoritesRepository = InMemoryFavoritesRepository()
+    override val favoritesRepository: FavoritesRepository = OfflineFavoritesRepository(database.favoriteDao())
     override val shoppingRepository: ShoppingRepository = InMemoryShoppingRepository()
 }
