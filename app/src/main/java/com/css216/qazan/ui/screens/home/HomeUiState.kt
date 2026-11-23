@@ -6,7 +6,8 @@ import com.css216.qazan.data.model.Meal
 data class HomeUiState(
     val content: HomeContent = HomeContent.Loading,
     val fridgeCount: Int = 0,
-    val favoriteIds: Set<String> = emptySet()
+    val favoriteIds: Set<String> = emptySet(),
+    val darkTheme: Boolean? = null
 )
 
 sealed interface HomeContent {

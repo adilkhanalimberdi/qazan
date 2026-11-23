@@ -4,11 +4,13 @@ import androidx.lifecycle.SavedStateHandle
 import com.css216.qazan.data.repository.FakeRecipeRepository
 import com.css216.qazan.data.repository.InMemoryFavoritesRepository
 import com.css216.qazan.data.repository.InMemoryFridgeRepository
+import com.css216.qazan.data.repository.UserPreferencesRepository
 import com.css216.qazan.ui.screens.home.HomeContent
 import com.css216.qazan.ui.screens.home.HomeViewModel
 import com.css216.qazan.ui.screens.search.SearchContent
 import com.css216.qazan.ui.screens.search.SearchViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -23,6 +25,12 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ViewModelTest {
+    private val preferences = object : UserPreferencesRepository {
+        private val selected = MutableStateFlow<Boolean?>(null)
+        override val darkTheme = selected
+        override suspend fun setDarkTheme(enabled: Boolean) { selected.value = enabled }
+    }
+
     @Before
     fun setUp() {
         Dispatchers.setMain(StandardTestDispatcher())
@@ -36,7 +44,9 @@ class ViewModelTest {
     @Test
     fun homeLoadsRecipeAndFridgeCount() = runTest {
         val fridge = InMemoryFridgeRepository()
-        val viewModel = HomeViewModel(FakeRecipeRepository(), fridge, InMemoryFavoritesRepository())
+        val viewModel = HomeViewModel(
+            FakeRecipeRepository(), fridge, InMemoryFavoritesRepository(), preferences
+        )
         advanceUntilIdle()
         assertTrue(viewModel.uiState.value.content is HomeContent.Success)
 

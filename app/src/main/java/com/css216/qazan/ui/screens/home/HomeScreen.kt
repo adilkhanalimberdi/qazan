@@ -2,11 +2,13 @@ package com.css216.qazan.ui.screens.home
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -51,7 +54,10 @@ fun HomeRoute(
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    HomeScreen(uiState, onOpenFridge, onMealClick, onCategoryClick, onOpenShopping, viewModel::loadRecipe, viewModel::toggleFavorite)
+    HomeScreen(
+        uiState, onOpenFridge, onMealClick, onCategoryClick, onOpenShopping,
+        viewModel::loadRecipe, viewModel::toggleFavorite, viewModel::setDarkTheme
+    )
 }
 
 @Composable
@@ -62,8 +68,10 @@ fun HomeScreen(
     onCategoryClick: (String) -> Unit,
     onOpenShopping: () -> Unit,
     onNextRecipe: () -> Unit,
-    onFavoriteClick: () -> Unit
+    onFavoriteClick: () -> Unit,
+    onThemeChange: (Boolean) -> Unit
 ) {
+    val isDarkTheme = uiState.darkTheme ?: isSystemInDarkTheme()
     LazyColumn(
         contentPadding = PaddingValues(Dimensions.screenPadding),
         verticalArrangement = Arrangement.spacedBy(Dimensions.large)
@@ -74,6 +82,12 @@ fun HomeScreen(
                 Column(Modifier.weight(1f).padding(start = Dimensions.medium)) {
                     Text(stringResource(R.string.app_name), style = MaterialTheme.typography.headlineSmall)
                     Text(stringResource(R.string.slogan), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
+                }
+                TextButton(
+                    onClick = { onThemeChange(!isDarkTheme) },
+                    modifier = Modifier.heightIn(min = Dimensions.touchTarget)
+                ) {
+                    Text(stringResource(if (isDarkTheme) R.string.dark_theme else R.string.light_theme))
                 }
                 IconButton(onClick = onOpenShopping) {
                     Icon(painterResource(R.drawable.ic_shopping_cart), stringResource(R.string.shopping))
@@ -135,7 +149,7 @@ private fun HomePreview() {
     QazanTheme {
         HomeScreen(
             HomeUiState(HomeContent.Success(FakeRecipeData.meals.first(), listOf(Category("Chicken", null)))),
-            {}, {}, {}, {}, {}, {}
+            {}, {}, {}, {}, {}, {}, {}
         )
     }
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.css216.qazan.data.repository.FavoritesRepository
 import com.css216.qazan.data.repository.FridgeRepository
 import com.css216.qazan.data.repository.RecipeRepository
+import com.css216.qazan.data.repository.UserPreferencesRepository
 import java.io.IOException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
@@ -20,7 +21,8 @@ import retrofit2.HttpException
 class HomeViewModel(
     private val recipeRepository: RecipeRepository,
     fridgeRepository: FridgeRepository,
-    private val favoritesRepository: FavoritesRepository
+    private val favoritesRepository: FavoritesRepository,
+    private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -36,6 +38,11 @@ class HomeViewModel(
         viewModelScope.launch {
             favoritesRepository.favorites.collect { favorites ->
                 _uiState.update { it.copy(favoriteIds = favorites.map { meal -> meal.id }.toSet()) }
+            }
+        }
+        viewModelScope.launch {
+            userPreferencesRepository.darkTheme.collect { darkTheme ->
+                _uiState.update { it.copy(darkTheme = darkTheme) }
             }
         }
     }
@@ -66,5 +73,9 @@ class HomeViewModel(
     fun toggleFavorite() {
         val content = _uiState.value.content as? HomeContent.Success ?: return
         viewModelScope.launch { favoritesRepository.toggle(content.meal.toSummary()) }
+    }
+
+    fun setDarkTheme(enabled: Boolean) {
+        viewModelScope.launch { userPreferencesRepository.setDarkTheme(enabled) }
     }
 }

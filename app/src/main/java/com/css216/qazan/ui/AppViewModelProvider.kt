@@ -34,7 +34,10 @@ object AppViewModelProvider {
         }
         initializer {
             val container = qazanApplication().container
-            HomeViewModel(container.recipeRepository, container.fridgeRepository, container.favoritesRepository)
+            HomeViewModel(
+                container.recipeRepository, container.fridgeRepository,
+                container.favoritesRepository, container.userPreferencesRepository
+            )
         }
     }
 }
