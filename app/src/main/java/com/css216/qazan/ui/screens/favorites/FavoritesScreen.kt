@@ -1,8 +1,11 @@
 package com.css216.qazan.ui.screens.favorites
 
 import android.content.res.Configuration
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -12,9 +15,13 @@ import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,10 +32,12 @@ import com.css216.qazan.data.model.MealSummary
 import com.css216.qazan.ui.AppViewModelProvider
 import com.css216.qazan.ui.components.EmptyView
 import com.css216.qazan.ui.components.MealGridCard
+import com.css216.qazan.ui.components.MealPreviewPane
 import com.css216.qazan.ui.components.ScreenHeading
 import com.css216.qazan.ui.theme.Dimensions
 import com.css216.qazan.ui.theme.QazanTheme
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun FavoritesRoute(
     onMealClick: (String) -> Unit,
@@ -36,32 +45,52 @@ fun FavoritesRoute(
     viewModel: FavoritesViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    FavoritesScreen(uiState, onMealClick, onOpenShopping, viewModel::toggleFavorite)
+    val activity = LocalActivity.current ?: return
+    val isWide = calculateWindowSizeClass(activity).widthSizeClass != WindowWidthSizeClass.Compact
+    FavoritesScreen(
+        uiState, onMealClick, onOpenShopping, viewModel::toggleFavorite,
+        isWide, viewModel::selectMeal, viewModel::retrySelectedMeal
+    )
 }
 
 @Composable
-fun FavoritesScreen(uiState: FavoritesUiState, onMealClick: (String) -> Unit, onOpenShopping: () -> Unit, onFavoriteClick: (MealSummary) -> Unit) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(Dimensions.screenPadding),
-        horizontalArrangement = Arrangement.spacedBy(Dimensions.medium),
-        verticalArrangement = Arrangement.spacedBy(Dimensions.large)
-    ) {
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            ScreenHeading(stringResource(R.string.favorites), stringResource(R.string.favorites_count, uiState.meals.size)) {
-                IconButton(onClick = onOpenShopping) {
-                    BadgedBox(badge = { if (uiState.shoppingCount > 0) Badge { Text(uiState.shoppingCount.toString()) } }) {
-                        Icon(painterResource(R.drawable.ic_shopping_cart), stringResource(R.string.shopping_remaining, uiState.shoppingCount))
+fun FavoritesScreen(
+    uiState: FavoritesUiState,
+    onMealClick: (String) -> Unit,
+    onOpenShopping: () -> Unit,
+    onFavoriteClick: (MealSummary) -> Unit,
+    isWide: Boolean = false,
+    onSelectMeal: (String) -> Unit = onMealClick,
+    onRetrySelectedMeal: () -> Unit = {}
+) {
+    Row(Modifier.fillMaxSize()) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier.weight(1f),
+            contentPadding = PaddingValues(Dimensions.screenPadding),
+            horizontalArrangement = Arrangement.spacedBy(Dimensions.medium),
+            verticalArrangement = Arrangement.spacedBy(Dimensions.large)
+        ) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                ScreenHeading(stringResource(R.string.favorites), stringResource(R.string.favorites_count, uiState.meals.size)) {
+                    IconButton(onClick = onOpenShopping) {
+                        BadgedBox(badge = { if (uiState.shoppingCount > 0) Badge { Text(uiState.shoppingCount.toString()) } }) {
+                            Icon(painterResource(R.drawable.ic_shopping_cart), stringResource(R.string.shopping_remaining, uiState.shoppingCount))
+                        }
                     }
                 }
             }
+            if (uiState.meals.isEmpty()) item(span = { GridItemSpan(maxLineSpan) }) {
+                EmptyView(stringResource(R.string.favorites_empty))
+            }
+            items(uiState.meals, key = { it.id }) { meal ->
+                MealGridCard(
+                    meal, { if (isWide) onSelectMeal(meal.id) else onMealClick(meal.id) },
+                    { onFavoriteClick(meal) }, isFavorite = true
+                )
+            }
         }
-        if (uiState.meals.isEmpty()) item(span = { GridItemSpan(maxLineSpan) }) {
-            EmptyView(stringResource(R.string.favorites_empty))
-        }
-        items(uiState.meals, key = { it.id }) { meal ->
-            MealGridCard(meal, { onMealClick(meal.id) }, { onFavoriteClick(meal) }, isFavorite = true)
-        }
+        if (isWide) MealPreviewPane(uiState.preview, onRetrySelectedMeal, onMealClick, Modifier.weight(1f))
     }
 }
 

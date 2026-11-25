@@ -1,8 +1,10 @@
 package com.css216.qazan.ui.screens.search
 
 import android.content.res.Configuration
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -20,6 +22,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -39,10 +44,12 @@ import com.css216.qazan.ui.components.EmptyView
 import com.css216.qazan.ui.components.ErrorView
 import com.css216.qazan.ui.components.LoadingView
 import com.css216.qazan.ui.components.MealListCard
+import com.css216.qazan.ui.components.MealPreviewPane
 import com.css216.qazan.ui.components.ScreenHeading
 import com.css216.qazan.ui.theme.Dimensions
 import com.css216.qazan.ui.theme.QazanTheme
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun SearchRoute(
     onMealClick: (String) -> Unit,
@@ -50,7 +57,13 @@ fun SearchRoute(
     viewModel: SearchViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    SearchScreen(uiState, viewModel::updateQuery, viewModel::toggleFridge, viewModel::clearCategory, viewModel::loadResults, viewModel::toggleFavorite, onMealClick, onOpenFridge)
+    val activity = LocalActivity.current ?: return
+    val isWide = calculateWindowSizeClass(activity).widthSizeClass != WindowWidthSizeClass.Compact
+    SearchScreen(
+        uiState, viewModel::updateQuery, viewModel::toggleFridge, viewModel::clearCategory,
+        viewModel::loadResults, viewModel::toggleFavorite, onMealClick, onOpenFridge,
+        isWide, viewModel::selectMeal, viewModel::retrySelectedMeal
+    )
 }
 
 @Composable
@@ -62,80 +75,86 @@ fun SearchScreen(
     onRetry: () -> Unit,
     onFavoriteClick: (MealSummary) -> Unit,
     onMealClick: (String) -> Unit,
-    onOpenFridge: () -> Unit
+    onOpenFridge: () -> Unit,
+    isWide: Boolean = false,
+    onSelectMeal: (String) -> Unit = onMealClick,
+    onRetrySelectedMeal: () -> Unit = {}
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
-    LazyColumn(
-        modifier = Modifier.fillMaxSize().imePadding(),
-        contentPadding = PaddingValues(Dimensions.screenPadding),
-        verticalArrangement = Arrangement.spacedBy(Dimensions.medium)
-    ) {
-        item { ScreenHeading(stringResource(R.string.search_title)) }
-        item {
-            OutlinedTextField(
-                uiState.query, onQueryChange,
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text(stringResource(R.string.search_input)) },
-                placeholder = { Text(stringResource(R.string.search_hint)) },
-                leadingIcon = { Icon(painterResource(R.drawable.ic_search), null) },
-                trailingIcon = {
-                    if (uiState.query.isNotEmpty()) IconButton(onClick = { onQueryChange("") }) {
-                        Icon(painterResource(R.drawable.ic_close), stringResource(R.string.clear_search))
+    Row(Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier.weight(1f).imePadding(),
+            contentPadding = PaddingValues(Dimensions.screenPadding),
+            verticalArrangement = Arrangement.spacedBy(Dimensions.medium)
+        ) {
+            item { ScreenHeading(stringResource(R.string.search_title)) }
+            item {
+                OutlinedTextField(
+                    uiState.query, onQueryChange,
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text(stringResource(R.string.search_input)) },
+                    placeholder = { Text(stringResource(R.string.search_hint)) },
+                    leadingIcon = { Icon(painterResource(R.drawable.ic_search), null) },
+                    trailingIcon = {
+                        if (uiState.query.isNotEmpty()) IconButton(onClick = { onQueryChange("") }) {
+                            Icon(painterResource(R.drawable.ic_close), stringResource(R.string.clear_search))
+                        }
+                    },
+                    singleLine = true,
+                    shape = MaterialTheme.shapes.medium,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                    keyboardActions = KeyboardActions(onSearch = { keyboard?.hide() })
+                )
+            }
+            item {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimensions.small)) {
+                    item {
+                        FilterChip(
+                            uiState.useFridge, onToggleFridge,
+                            label = { Text(stringResource(R.string.fridge_filter, uiState.fridgeCount)) },
+                            modifier = Modifier.heightIn(min = Dimensions.touchTarget)
+                        )
                     }
-                },
-                singleLine = true,
-                shape = MaterialTheme.shapes.medium,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = { keyboard?.hide() })
-            )
-        }
-        item {
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(Dimensions.small)) {
-                item {
-                    FilterChip(
-                        uiState.useFridge, onToggleFridge,
-                        label = { Text(stringResource(R.string.fridge_filter, uiState.fridgeCount)) },
-                        modifier = Modifier.heightIn(min = Dimensions.touchTarget)
-                    )
-                }
-                if (uiState.category.isNotBlank()) item {
-                    InputChip(
-                        selected = true,
-                        onClick = onClearCategory,
-                        label = { Text(uiState.category) },
-                        trailingIcon = { Icon(painterResource(R.drawable.ic_close), stringResource(R.string.remove_category, uiState.category)) },
-                        modifier = Modifier.heightIn(min = Dimensions.touchTarget)
-                    )
+                    if (uiState.category.isNotBlank()) item {
+                        InputChip(
+                            selected = true,
+                            onClick = onClearCategory,
+                            label = { Text(uiState.category) },
+                            trailingIcon = { Icon(painterResource(R.drawable.ic_close), stringResource(R.string.remove_category, uiState.category)) },
+                            modifier = Modifier.heightIn(min = Dimensions.touchTarget)
+                        )
+                    }
                 }
             }
-        }
-        when (val content = uiState.content) {
-            SearchContent.Loading -> item { LoadingView() }
-            SearchContent.Error -> item { ErrorView(onRetry) }
-            is SearchContent.Success -> {
-                item { Text(stringResource(R.string.results_count, content.results.size), style = MaterialTheme.typography.bodyMedium) }
-                if (content.results.isEmpty()) {
-                    item {
-                        EmptyView(stringResource(if (uiState.useFridge && uiState.fridgeCount == 0) R.string.search_fridge_empty else R.string.empty_results))
-                    }
-                    if (uiState.useFridge && uiState.fridgeCount == 0) item {
-                        TextButton(onClick = onOpenFridge) {
-                            Text(stringResource(R.string.open_fridge), color = MaterialTheme.colorScheme.secondary)
+            when (val content = uiState.content) {
+                SearchContent.Loading -> item { LoadingView() }
+                SearchContent.Error -> item { ErrorView(onRetry) }
+                is SearchContent.Success -> {
+                    item { Text(stringResource(R.string.results_count, content.results.size), style = MaterialTheme.typography.bodyMedium) }
+                    if (content.results.isEmpty()) {
+                        item {
+                            EmptyView(stringResource(if (uiState.useFridge && uiState.fridgeCount == 0) R.string.search_fridge_empty else R.string.empty_results))
+                        }
+                        if (uiState.useFridge && uiState.fridgeCount == 0) item {
+                            TextButton(onClick = onOpenFridge) {
+                                Text(stringResource(R.string.open_fridge), color = MaterialTheme.colorScheme.secondary)
+                            }
                         }
                     }
-                }
-                items(content.results, key = { it.meal.id }) { result ->
-                    MealListCard(
-                        result.meal,
-                        onClick = { keyboard?.hide(); onMealClick(result.meal.id) },
-                        onFavoriteClick = { onFavoriteClick(result.meal) },
-                        isFavorite = result.meal.id in uiState.favoriteIds,
-                        matchedCount = if (uiState.useFridge) result.matchedCount else null,
-                        selectedCount = result.selectedCount
-                    )
+                    items(content.results, key = { it.meal.id }) { result ->
+                        MealListCard(
+                            result.meal,
+                            onClick = { keyboard?.hide(); if (isWide) onSelectMeal(result.meal.id) else onMealClick(result.meal.id) },
+                            onFavoriteClick = { onFavoriteClick(result.meal) },
+                            isFavorite = result.meal.id in uiState.favoriteIds,
+                            matchedCount = if (uiState.useFridge) result.matchedCount else null,
+                            selectedCount = result.selectedCount
+                        )
+                    }
                 }
             }
         }
+        if (isWide) MealPreviewPane(uiState.preview, onRetrySelectedMeal, onMealClick, Modifier.weight(1f))
     }
 }
 

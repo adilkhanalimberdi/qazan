@@ -18,7 +18,9 @@ object AppViewModelProvider {
         initializer { ShoppingViewModel(qazanApplication().container.shoppingRepository) }
         initializer {
             val container = qazanApplication().container
-            FavoritesViewModel(container.favoritesRepository, container.shoppingRepository)
+            FavoritesViewModel(
+                container.favoritesRepository, container.shoppingRepository, container.recipeRepository
+            )
         }
         initializer {
             val container = qazanApplication().container

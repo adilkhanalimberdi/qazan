@@ -4,7 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.css216.qazan.data.model.MealSummary
 import com.css216.qazan.data.repository.FavoritesRepository
+import com.css216.qazan.data.repository.RecipeRepository
 import com.css216.qazan.data.repository.ShoppingRepository
+import com.css216.qazan.ui.components.MealPreviewState
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,10 +18,12 @@ import kotlinx.coroutines.launch
 
 class FavoritesViewModel(
     private val favoritesRepository: FavoritesRepository,
-    shoppingRepository: ShoppingRepository
+    shoppingRepository: ShoppingRepository,
+    private val recipeRepository: RecipeRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(FavoritesUiState())
     val uiState: StateFlow<FavoritesUiState> = _uiState.asStateFlow()
+    private var previewJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -31,5 +37,24 @@ class FavoritesViewModel(
 
     fun toggleFavorite(meal: MealSummary) {
         viewModelScope.launch { favoritesRepository.toggle(meal) }
+    }
+
+    fun selectMeal(id: String) {
+        previewJob?.cancel()
+        previewJob = viewModelScope.launch {
+            _uiState.update { it.copy(selectedMealId = id, preview = MealPreviewState.Loading) }
+            try {
+                val meal = recipeRepository.getMealById(id)
+                _uiState.update { it.copy(preview = MealPreviewState.Success(meal)) }
+            } catch (error: CancellationException) {
+                throw error
+            } catch (_: Exception) {
+                _uiState.update { it.copy(preview = MealPreviewState.Error) }
+            }
+        }
+    }
+
+    fun retrySelectedMeal() {
+        _uiState.value.selectedMealId?.let(::selectMeal)
     }
 }

@@ -9,6 +9,7 @@ import com.css216.qazan.data.repository.FavoritesRepository
 import com.css216.qazan.data.repository.FridgeRepository
 import com.css216.qazan.data.repository.RecipeRepository
 import com.css216.qazan.ui.navigation.QazanDestination
+import com.css216.qazan.ui.components.MealPreviewState
 import java.io.IOException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
@@ -31,6 +32,7 @@ class SearchViewModel(
     val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
     private var fridgeIngredients = emptyList<String>()
     private var searchJob: Job? = null
+    private var previewJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -94,5 +96,24 @@ class SearchViewModel(
 
     fun toggleFavorite(meal: MealSummary) {
         viewModelScope.launch { favoritesRepository.toggle(meal) }
+    }
+
+    fun selectMeal(id: String) {
+        previewJob?.cancel()
+        previewJob = viewModelScope.launch {
+            _uiState.update { it.copy(selectedMealId = id, preview = MealPreviewState.Loading) }
+            try {
+                val meal = recipeRepository.getMealById(id)
+                _uiState.update { it.copy(preview = MealPreviewState.Success(meal)) }
+            } catch (error: CancellationException) {
+                throw error
+            } catch (_: Exception) {
+                _uiState.update { it.copy(preview = MealPreviewState.Error) }
+            }
+        }
+    }
+
+    fun retrySelectedMeal() {
+        _uiState.value.selectedMealId?.let(::selectMeal)
     }
 }
