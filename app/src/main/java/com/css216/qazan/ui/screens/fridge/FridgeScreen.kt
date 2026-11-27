@@ -93,7 +93,7 @@ fun FridgeScreen(
             }
         }
         if (uiState.suggestions.isNotEmpty()) {
-            item { SectionHeader(stringResource(R.string.common_ingredients)) }
+            item { SectionHeader(stringResource(if (uiState.input.isBlank()) R.string.common_ingredients else R.string.ingredient_suggestions)) }
             item {
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(Dimensions.small)) {
                     uiState.suggestions.forEach { ingredient -> SuggestionChip(ingredient, { onSuggestionClick(ingredient) }) }

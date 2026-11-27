@@ -4,6 +4,7 @@
     <string name="unsave_meal">Убрать %1$s из избранного</string>
     <string name="match_count">%1$d из %2$d твоих продуктов</string>
     <string name="meal_meta">%1$s · %2$s</string>
+    <string name="meal_photo">Фото блюда %1$s</string>
     <string name="remove_ingredient">Убрать %1$s</string>
     <string name="back">Назад</string>
     <string name="loading">Загружаем рецепты…</string>
@@ -32,6 +33,7 @@
     <string name="add_ingredient">Добавить продукт</string>
     <string name="your_ingredients">У тебя есть · %1$d</string>
     <string name="common_ingredients">Часто добавляют</string>
+    <string name="ingredient_suggestions">Подсказки</string>
     <string name="fridge_empty">Здесь пока пусто. Добавь первый продукт.</string>
     <string name="find_recipes">Найти рецепты</string>
     <string name="search_title">Найти свой рецепт</string>
@@ -52,7 +54,7 @@
     <string name="all_ingredients_available">Все продукты уже есть</string>
     <string name="open_shopping">Открыть покупки</string>
     <string name="shopping_added">Недостающие продукты добавлены</string>
-    <string name="demo_recipe">Демонстрационный рецепт</string>
+    <string name="mealdb_attribution">Данные и фото: TheMealDB</string>
     <string name="favorites_count">Сохранено рецептов: %1$d</string>
     <string name="favorites_empty">Сохраняй рецепты сердечком — они появятся здесь.</string>
     <string name="shopping_remaining">Открыть покупки. Осталось: %1$d</string>

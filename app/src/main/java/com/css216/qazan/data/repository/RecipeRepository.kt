@@ -11,5 +11,6 @@ interface RecipeRepository {
     suspend fun getMealById(id: String): Meal
     suspend fun searchByName(query: String): List<MealSummary>
     suspend fun getMealsByCategory(category: String): List<MealSummary>
+    suspend fun getIngredientSuggestions(): List<String>
     suspend fun findByIngredients(ingredients: List<String>): List<MatchedMeal>
 }

@@ -31,6 +31,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
@@ -46,8 +47,9 @@ import com.css216.qazan.data.fake.FakeRecipeData
 import com.css216.qazan.data.model.Ingredient
 import com.css216.qazan.ui.components.ErrorView
 import com.css216.qazan.ui.components.FavoriteButton
+import com.css216.qazan.ui.components.IngredientPhoto
 import com.css216.qazan.ui.components.LoadingView
-import com.css216.qazan.ui.components.MealPlaceholder
+import com.css216.qazan.ui.components.MealPhoto
 import com.css216.qazan.ui.components.ScreenHeading
 import com.css216.qazan.ui.theme.Dimensions
 import com.css216.qazan.ui.theme.QazanTheme
@@ -88,7 +90,7 @@ fun DetailScreen(
         LazyColumn(Modifier.weight(1f)) {
             item {
                 Box(Modifier.fillMaxWidth().height(250.dp)) {
-                    MealPlaceholder(Modifier.fillMaxSize())
+                    MealPhoto(content.meal.name, content.meal.thumbUrl, Modifier.fillMaxSize(), large = true)
                     Row(Modifier.fillMaxWidth().padding(Dimensions.large), horizontalArrangement = Arrangement.SpaceBetween) {
                         Surface(shape = CircleShape) {
                             IconButton(onClick = onBack) { Icon(painterResource(R.drawable.ic_arrow_back), stringResource(R.string.back)) }
@@ -134,7 +136,7 @@ fun DetailScreen(
                                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                             }
                         } else Text(content.meal.instructions, style = MaterialTheme.typography.bodyLarge)
-                        Text(stringResource(R.string.demo_recipe), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(stringResource(R.string.mealdb_attribution), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
@@ -183,6 +185,7 @@ private fun IngredientRow(ingredient: Ingredient, have: Boolean) {
                 drawCircle(outline, radius = size.minDimension / 2 - 1.dp.toPx(), style = Stroke(1.dp.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 3.dp.toPx()))))
             }
         }
+        IngredientPhoto(ingredient.name, Modifier.size(36.dp).clip(MaterialTheme.shapes.small))
         Text(ingredient.name, Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
         Text(ingredient.measure, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }

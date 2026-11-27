@@ -9,6 +9,7 @@ import com.css216.qazan.data.repository.FridgeRepository
 import com.css216.qazan.data.repository.RecipeRepository
 import com.css216.qazan.data.repository.ShoppingRepository
 import com.css216.qazan.ui.navigation.QazanDestination
+import java.io.IOException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class DetailViewModel(
     savedStateHandle: SavedStateHandle,
@@ -52,7 +54,11 @@ class DetailViewModel(
                 }
             } catch (error: CancellationException) {
                 throw error
-            } catch (_: Exception) {
+            } catch (_: IOException) {
+                _uiState.update { it.copy(content = DetailContent.Error) }
+            } catch (_: HttpException) {
+                _uiState.update { it.copy(content = DetailContent.Error) }
+            } catch (_: NoSuchElementException) {
                 _uiState.update { it.copy(content = DetailContent.Error) }
             }
         }

@@ -5,13 +5,17 @@ import androidx.lifecycle.viewModelScope
 import com.css216.qazan.data.repository.FavoritesRepository
 import com.css216.qazan.data.repository.FridgeRepository
 import com.css216.qazan.data.repository.RecipeRepository
+import java.io.IOException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class HomeViewModel(
     private val recipeRepository: RecipeRepository,
@@ -41,12 +45,19 @@ class HomeViewModel(
         loadJob = viewModelScope.launch {
             _uiState.update { it.copy(content = HomeContent.Loading) }
             try {
-                val meal = recipeRepository.getRandomMeal()
-                val categories = recipeRepository.getCategories()
+                val (meal, categories) = coroutineScope {
+                    val mealRequest = async { recipeRepository.getRandomMeal() }
+                    val categoriesRequest = async { recipeRepository.getCategories() }
+                    mealRequest.await() to categoriesRequest.await()
+                }
                 _uiState.update { it.copy(content = HomeContent.Success(meal, categories)) }
             } catch (error: CancellationException) {
                 throw error
-            } catch (_: Exception) {
+            } catch (_: IOException) {
+                _uiState.update { it.copy(content = HomeContent.Error) }
+            } catch (_: HttpException) {
+                _uiState.update { it.copy(content = HomeContent.Error) }
+            } catch (_: NoSuchElementException) {
                 _uiState.update { it.copy(content = HomeContent.Error) }
             }
         }
